@@ -3,10 +3,17 @@
     <div>
       <h2>Thông tin CLB</h2>
       <v-row class="mt-4">
-        <v-col cols="12">Tên CLB: {{ clubStore.club.name }}</v-col>
+        <v-col cols="12">
+          Tên CLB: {{ clubStore.club.name }}
+          <v-chip v-if="clubStore.club?.status == 0" color="error">Đã giải thể</v-chip>
+        </v-col>
         <v-col cols="12">Mô tả: {{ clubStore.club.description }}</v-col>
         <v-col cols="12">Ngày thành lập: {{ formatDate(new Date(clubStore.club.createdAt)) }}</v-col>
+        <v-col cols="12" v-if="clubStore.club?.status == 0">Ngày giải thể: {{ formatDate(new Date(clubStore.club.dissolvedAt)) }}</v-col>
         <v-col cols="12">Số lượng thành viên: {{ clubStore.club.memberCount }}</v-col>
+        <v-col cols="12">
+          
+        </v-col>
       </v-row>
       <h2 class="mt-5 mb-4">Chủ nhiệm</h2>
       <v-row>

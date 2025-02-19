@@ -31,7 +31,7 @@
           <v-card-title>
             Danh sách CLB
           </v-card-title>
-          <v-btn append-icon="mdi-plus">
+          <v-btn append-icon="mdi-plus" @click="openAddDialog">
             Thêm
           </v-btn>
         </div>
@@ -73,12 +73,12 @@
             </v-chip>
           </template>
           <template v-slot:item.actions="{ item }">
-            <div class="d-flex justify-center ga-2">
-              <v-btn size="x-small" icon color="info">
+            <div v-if="item.status == 1" class="d-flex justify-center ga-2">
+              <v-btn size="x-small" icon color="info" @click="openEditDialog(item)">
                 <v-icon>mdi-pencil-outline</v-icon>
               </v-btn>
               <v-btn size="x-small" icon color="error" @click="handleDelete(item)">
-                <v-icon>mdi-trash-can-outline</v-icon>
+                <v-icon>mdi-cancel</v-icon>
               </v-btn>
             </div>
           </template>
@@ -108,13 +108,81 @@
         </template>
       </v-card-item>
     </v-card>
+    <template>
+      <v-form ref="formAddRef">
+        <v-dialog v-model="addDialog" persistent width="800">
+          <v-card>
+            <v-toolbar title="Thêm CLB"></v-toolbar>
+            <v-card-text>
+              <v-col cols="12">
+                <v-text-field
+                  label="Tên CLB"
+                  density="comfortable"
+                  v-model="formData.name"
+                  :rules="[isRequired('Tên CLB')]"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="Mô tả"
+                  density="comfortable"
+                  v-model="formData.description"
+                />
+              </v-col>
+            </v-card-text>
+            <v-card-actions class="mb-2">
+              <v-spacer></v-spacer>
+              <v-btn variant="elevated" color="grey-200" @click="closeAddDialog">
+                Hủy bỏ
+              </v-btn>
+              <v-btn variant="elevated" color="primary" @click="onCreateClub">
+                Thêm
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-form>
+      <v-form ref="formEditRef">
+        <v-dialog v-model="editDialog" persistent width="800">
+          <v-card>
+            <v-toolbar title="Cập nhật CLB"></v-toolbar>
+            <v-card-text>
+              <v-col cols="12">
+                <v-text-field
+                  label="Tên CLB"
+                  density="comfortable"
+                  v-model="formData.name"
+                  :rules="[isRequired('Tên CLB')]"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="Mô tả"
+                  density="comfortable"
+                  v-model="formData.description"
+                />
+              </v-col>
+            </v-card-text>
+            <v-card-actions class="mb-2">
+              <v-spacer></v-spacer>
+              <v-btn variant="elevated" color="grey-200" @click="closeAddDialog">
+                Hủy bỏ
+              </v-btn>
+              <v-btn variant="elevated" color="primary" @click="onUpdateClub">
+                Lưu
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-form>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { useClubStore } from "@/stores";
-import { formatDate } from "@/utils";
+import { formatDate, isRequired } from "@/utils";
 import { useToast } from "vue-toastification";
 
 const expansionPanel = ref([0]);
@@ -128,6 +196,16 @@ const formSearch = reactive({
 
 const deleteDialog = ref(false);
 const deleteDialogData = ref(null);
+
+const formAddRef = ref(null)
+const addDialog = ref(false)
+const formData = reactive({
+  id: "",
+  name: "",
+  description: ""
+})
+const formEditRef = ref(null)
+const editDialog = ref(false)
 
 const dataTable = reactive({
   itemsPerPage: 25,
@@ -176,10 +254,55 @@ async function getData({ page, itemsPerPage, sortBy }) {
   }
 }
 
+function openAddDialog() {
+  addDialog.value = true
+}
+function openEditDialog(data) {
+  editDialog.value = true
+  formData.id = data.id;
+  formData.name = data.name;
+  formData.description = data.description
+}
+
+function closeAddDialog() {
+  addDialog.value = false;
+  editDialog.value = false;
+  formData.name = "",
+  formData.description = ""
+}
+
+async function onCreateClub() {
+  try {
+    const { valid } = await formAddRef.value.validate();
+    if (!valid) return;
+    await clubStore.create(formData.name, formData.description);
+    closeAddDialog()
+    handleSearch();
+    toast.success("Thêm CLB thành công")
+  } catch (error) {
+    console.error(error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+}
+async function onUpdateClub() {
+  try {
+    const { valid } = await formEditRef.value.validate();
+    if (!valid) return;
+    await clubStore.update(formData.id, formData.name, formData.description);
+    closeAddDialog()
+    handleSearch();
+    toast.success("Cập nhật CLB thành công")
+  } catch (error) {
+    console.error(error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+}
+
+
 function handleDelete(item) {
   deleteDialogData.value = {
     id: item.id,
-    name: item.code
+    name: item.name
   }
   deleteDialog.value = true;
 }

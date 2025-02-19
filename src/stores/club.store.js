@@ -24,16 +24,20 @@ export const useClubStore = defineStore("useClubStore", {
       }
       return response.data;
     },
-    async create(storage) {
-      const response = await ApiService.post("/storages", storage);
+    async create(name, description) {
+      const response = await ApiService.post("/clubs", {
+        name, description
+      });
       return response.data;
     },
-    async update(storage) {
-      const response = await ApiService.put("/storages/"+storage.id, storage);
+    async update(id, name, description) {
+      const response = await ApiService.put("/clubs/" + id, {
+        name, description
+      });
       return response.data;
     },
     async delete(id) {
-      const response = await ApiService.delete("/storages/"+id);
+      const response = await ApiService.delete("/clubs/"+id);
       return response.data;
     },
     async getBoards(clubId) {
