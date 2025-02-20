@@ -98,7 +98,7 @@
                   <v-btn variant="elevated" color="grey-200" @click="deleteDialog = false">
                     Hủy bỏ
                   </v-btn>
-                  <v-btn variant="elevated" color="error" @click="deleteEquipment(deleteDialogData.id)">
+                  <v-btn variant="elevated" color="error" @click="deleteClub(deleteDialogData.id)">
                     Giải thể
                   </v-btn>
                 </v-card-actions>
@@ -162,6 +162,25 @@
                   v-model="formData.description"
                 />
               </v-col>
+              <v-col cols="12">
+                <v-autocomplete
+                  label="Chủ nhiệm CLB"
+                  :items="members"
+                  v-model="formData.userId"
+                  :return-object="false"
+                  item-value="user.id"
+                  item-title="user.username"
+                  variant="outlined"
+                >
+                  <template v-slot:item="{ props, item }">
+                    <v-list-item
+                      v-bind="props"
+                      :title="`${item.raw.user.firstName} ${item.raw.user.lastName}`"
+                      :subtitle="`${item.raw.user.username} (${item.raw.user.code})`"
+                    ></v-list-item>
+                  </template>
+                </v-autocomplete>
+              </v-col>
             </v-card-text>
             <v-card-actions class="mb-2">
               <v-spacer></v-spacer>
@@ -193,6 +212,7 @@ const toast = useToast();
 const formSearch = reactive({
   name: "",
 })
+const members = ref([])
 
 const deleteDialog = ref(false);
 const deleteDialogData = ref(null);
@@ -202,7 +222,8 @@ const addDialog = ref(false)
 const formData = reactive({
   id: "",
   name: "",
-  description: ""
+  description: "",
+  userId: null
 })
 const formEditRef = ref(null)
 const editDialog = ref(false)
@@ -246,7 +267,7 @@ async function getData({ page, itemsPerPage, sortBy }) {
     );
     
     dataTable.items = response.content;
-    dataTable.totalItems = dataTable.items.length;
+    dataTable.totalItems = response.totalElements;
   } catch (e) {
     console.error(e);
   } finally {
@@ -257,11 +278,13 @@ async function getData({ page, itemsPerPage, sortBy }) {
 function openAddDialog() {
   addDialog.value = true
 }
-function openEditDialog(data) {
+async function openEditDialog(data) {
+  await getMember(data.id)
   editDialog.value = true
   formData.id = data.id;
   formData.name = data.name;
   formData.description = data.description
+  formData.userId = data.manager ? data.manager.id : null
 }
 
 function closeAddDialog() {
@@ -288,7 +311,7 @@ async function onUpdateClub() {
   try {
     const { valid } = await formEditRef.value.validate();
     if (!valid) return;
-    await clubStore.update(formData.id, formData.name, formData.description);
+    await clubStore.update(formData.id, formData);
     closeAddDialog()
     handleSearch();
     toast.success("Cập nhật CLB thành công")
@@ -307,12 +330,22 @@ function handleDelete(item) {
   deleteDialog.value = true;
 }
 
-async function deleteEquipment(id) {
+async function deleteClub(id) {
   try {
     const response = await clubStore.delete(id);
     deleteDialog.value = false;
     handleSearch();
     toast.success("Đã giải thể CLB")
+  } catch (error) {
+    console.error(error);
+    toast.error(error.response?.data?.message || error.message);
+  }
+}
+
+async function getMember(clubId) {
+  try {
+    const response = await clubStore.getAllMembers(clubId);
+    members.value = response.content
   } catch (error) {
     console.error(error);
     toast.error(error.response?.data?.message || error.message);

@@ -165,7 +165,7 @@ const listUser = ref([])
 const addUsers = ref([])
 
 const dataTable = reactive({
-  itemsPerPage: -1,
+  itemsPerPage: 25,
   loading: false,
   totalItems: 0,
   headers: [
@@ -202,7 +202,7 @@ async function getData({ page, itemsPerPage, sortBy }) {
       route.params.id, formSearch.name, page, itemsPerPage, key, orderBy
     );
     dataTable.items = response.content;
-    dataTable.totalItems = dataTable.items.length;
+    dataTable.totalItems = response.totalElements;
   } catch (e) {
     console.error(e);
   } finally {

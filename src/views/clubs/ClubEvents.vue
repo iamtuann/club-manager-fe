@@ -31,7 +31,7 @@
           <v-card-title>
             Danh sách sự kiện
           </v-card-title>
-          <v-btn append-icon="mdi-plus">
+          <v-btn append-icon="mdi-plus" :to="{name: 'CreateEvent'}">
             Thêm
           </v-btn>
         </div>
@@ -55,20 +55,14 @@
           <template v-slot:item.index="{ index }">
             {{ index+=1 }}
           </template>
-          <template v-slot:item.name="{ item }">
-            {{ item.user.firstName + ' ' + item.user.lastName }}
-          </template>
-          <template v-slot:item.code="{ item }">
-            {{ item.user.code }}
-          </template>
-          <template v-slot:item.major="{ item }">
-            {{ item.user.major }}
-          </template>
-          <template v-slot:item.joinDate="{ item }">
-            {{ formatDate(new Date(item.joinDate)) }}
+          <template v-slot:item.eventDate="{ item }">
+            {{ formatDate(new Date(item.eventDate)) }}
           </template>
           <template v-slot:item.actions="{ item }">
             <div class="d-flex justify-center ga-2">
+              <v-btn size="x-small" icon color="info" :to="{name: 'UpdateEvent', params: {id: clubId, eventId: item.id}}">
+                <v-icon>mdi-pencil-outline</v-icon>
+              </v-btn>
               <v-btn size="x-small" icon color="error" @click="handleDelete(item)">
                 <v-icon>mdi-trash-can-outline</v-icon>
               </v-btn>
@@ -80,7 +74,7 @@
           <v-row justify="center">
             <v-dialog v-model="deleteDialog" persistent width="800">
               <v-card>
-                <v-toolbar color="error" title="Giải thể CLB"></v-toolbar>
+                <v-toolbar color="error" title="Xoá sự kiện"></v-toolbar>
                 <v-card-text>
                   <p>Bạn có chắc chắn muốn xoá sự kiện "<b> {{ deleteDialogData.name }}</b>"?
                   </p>
@@ -90,7 +84,7 @@
                   <v-btn variant="elevated" color="grey-200" @click="deleteDialog = false">
                     Hủy bỏ
                   </v-btn>
-                  <v-btn variant="elevated" color="error" @click="deleteEquipment(deleteDialogData.id)">
+                  <v-btn variant="elevated" color="error" @click="deleteEvent(deleteDialogData.id)">
                     Xoá
                   </v-btn>
                 </v-card-actions>
@@ -100,35 +94,13 @@
         </template>
       </v-card-item>
     </v-card>
-    <template>
-      <v-row justify="center">
-        <v-dialog v-model="addDialog" persistent width="800">
-          <v-card>
-            <v-toolbar color="error" title="Thêm sự kiện"></v-toolbar>
-            <v-card-text>
-              <p>Bạn có chắc chắn muốn xoá sự kiện "<b> {{ deleteDialogData.name }}</b>"?
-              </p>
-            </v-card-text>
-            <v-card-actions class="mb-2">
-              <v-spacer></v-spacer>
-              <v-btn variant="elevated" color="grey-200" @click="deleteDialog = false">
-                Hủy bỏ
-              </v-btn>
-              <v-btn variant="elevated" color="error" @click="deleteEvent(deleteDialogData.id)">
-                Xoá
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
   </div>
 </template>
 
 <script setup>
 import { useClubStore } from "@/stores";
 import { formatDate } from "@/utils";
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -136,6 +108,7 @@ const clubStore = useClubStore();
 const route = useRoute()
 const toast = useToast();
 
+const clubId = computed(() => route.params?.id)
 const expansionPanel = ref([0]);
 const formSearchRef = ref(null);
 const formSearch = reactive({
@@ -148,15 +121,15 @@ const addDialog = ref(false)
 const addUsers = ref([])
 
 const dataTable = reactive({
-  itemsPerPage: -1,
+  itemsPerPage: 25,
   loading: false,
   totalItems: 0,
   headers: [
     {title: "#", key: "index", align: "center", sortable: false},
-    {title: "Họ tên", key: "name", align: "center", sortable: true},
-    {title: "MSV", key: "code", align: "center", sortable: false},
-    {title: "Ngành học", key: "major", align: "center", sortable: false},
-    {title: "Ngày tham gia", key: "joinDate", align: "center", sortable: false},
+    {title: "Tên sự kiện", key: "name", align: "center", sortable: false},
+    {title: "Ngày diễn ra", key: "eventDate", align: "center", sortable: false},
+    {title: "Địa chỉ", key: "address", align: "center", sortable: false},
+    {title: "Số lượng thành viên", key: "memberCount", align: "center", sortable: false},
     // {title: "Trạng thái", key: "status", align: "center", sortable: false},
     {title: "", key: "actions", sortable: false},
   ],
@@ -185,7 +158,7 @@ async function getData({ page, itemsPerPage, sortBy }) {
       route.params.id, formSearch.name, page, itemsPerPage, key, orderBy
     );
     dataTable.items = response.content;
-    dataTable.totalItems = dataTable.items.length;
+    dataTable.totalItems = response.totalElements;
   } catch (e) {
     console.error(e);
   } finally {
@@ -196,17 +169,17 @@ async function getData({ page, itemsPerPage, sortBy }) {
 function handleDelete(item) {
   deleteDialogData.value = {
     id: item.id,
-    name: item.user.firstName + ' ' + item.user.lastName
+    name: item.name
   }
   deleteDialog.value = true;
 }
 
 async function deleteEvent(id) {
   try {
-    const response = await clubStore.delete(id);
+    const response = await clubStore.deleteEvent(clubId.value, id);
     deleteDialog.value = false;
     handleSearch();
-    toast.success("Đã giải thể CLB")
+    toast.success("Xoá sự kiện thành công")
   } catch (error) {
     console.error(error);
     toast.error(error.response?.data?.message || error.message);

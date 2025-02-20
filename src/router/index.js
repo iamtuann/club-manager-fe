@@ -11,7 +11,7 @@ const routes = [
     path: "",
     alias: "/",
     name: 'Events',
-    component: () => import('@/views/events/Event.vue'),
+    component: () => import('@/views/events/List.vue'),
     meta: { 
       layout: DefaultLayout,
       requiredAuth: true
@@ -63,6 +63,20 @@ const routes = [
         component: () => import('@/views/clubs/ClubEvents.vue'),
         meta: { 
           
+        }
+      },
+      {
+        path: "events/create",
+        name: 'CreateEvent',
+        component: () => import('@/views/clubs/CreateUpdateEvent.vue'),
+        meta: { 
+        }
+      },
+      {
+        path: "events/:eventId/update",
+        name: 'UpdateEvent',
+        component: () => import('@/views/clubs/CreateUpdateEvent.vue'),
+        meta: { 
         }
       },
     ]

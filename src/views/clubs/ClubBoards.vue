@@ -162,7 +162,7 @@ const formEditRef = ref(null)
 const editDialog = ref(false)
 
 const dataTable = reactive({
-  itemsPerPage: -1,
+  itemsPerPage: 25,
   loading: false,
   totalItems: 0,
   headers: [
@@ -189,7 +189,7 @@ async function getData() {
     const response = await clubStore.getBoards(route.params.id);
 
     dataTable.items = response;
-    dataTable.totalItems = dataTable.items.length;
+    dataTable.totalItems = response.totalElements;
   } catch (e) {
     console.error(e);
   } finally {

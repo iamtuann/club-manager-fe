@@ -30,10 +30,8 @@ export const useClubStore = defineStore("useClubStore", {
       });
       return response.data;
     },
-    async update(id, name, description) {
-      const response = await ApiService.put("/clubs/" + id, {
-        name, description
-      });
+    async update(id, data) {
+      const response = await ApiService.put("/clubs/" + id, data);
       return response.data;
     },
     async delete(id) {
@@ -68,6 +66,14 @@ export const useClubStore = defineStore("useClubStore", {
       });
       return response.data;
     },
+    async getAllMembers(clubId) {
+      const response = await ApiService.get(`/clubs/${clubId}/members`, {
+        params: {
+          pageSize: -1
+        }
+      });
+      return response.data;
+    },
     async addMembers(clubId, listUser) {
       const response = await ApiService.post(`/clubs/${clubId}/members`, {
         userIds: listUser
@@ -84,6 +90,22 @@ export const useClubStore = defineStore("useClubStore", {
           name, pageIndex, pageSize, key, orderBy
         }
       });
+      return response.data;
+    },
+    async getEventById(clubId, eventId) {
+      const response = await ApiService.get(`/clubs/${clubId}/events/${eventId}`);
+      return response.data;
+    },
+    async createEvent(clubId, formEvent) {
+      const response = await ApiService.post(`/clubs/${clubId}/events`, formEvent);
+      return response.data;
+    },
+    async updateEvent(clubId, eventId, formEvent) {
+      const response = await ApiService.put(`/clubs/${clubId}/events/${eventId}`, formEvent);
+      return response.data;
+    },
+    async deleteEvent(clubId, eventId) {
+      const response = await ApiService.delete(`/clubs/${clubId}/events/${eventId}`);
       return response.data;
     },
   }
