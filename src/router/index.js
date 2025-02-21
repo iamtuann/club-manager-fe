@@ -88,6 +88,31 @@ const routes = [
     ]
   },
   {
+    path: "/users",
+    meta: { 
+      layout: DefaultLayout,
+      requiredAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: 'Users',
+        component: () => import('@/views/users/List.vue'),
+        meta: { 
+          
+        }
+      },
+      {
+        path: "create",
+        name: 'CreateUser',
+        component: () => import('@/views/users/Create.vue'),
+        meta: { 
+          
+        }
+      },
+    ]
+  },
+  {
     path: "/login",
     name: "Login",
     component: () => import("@/views/Login.vue")

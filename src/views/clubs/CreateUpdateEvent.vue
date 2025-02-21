@@ -148,7 +148,7 @@ async function submitForm() {
       router.replace({name: "ClubEvents", params: {id: clubId.value}});
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     toast.error(error?.response.data.message);
   }
 }
