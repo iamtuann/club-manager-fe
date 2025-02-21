@@ -14,5 +14,13 @@ export const useEventStore = defineStore("useEventStore", {
       });
       return response.data;
     },
+    async getEventsOfMember(memberId, pageIndex) {
+      const response = await ApiService.get(`/events/of-member/${memberId}`, {
+        params: {
+          pageIndex
+        }
+      });
+      return response.data;
+    },
   }
 })

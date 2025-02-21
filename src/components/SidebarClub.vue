@@ -61,7 +61,7 @@ const items = [
       {name: "Thông tin", path: {name: "ClubInfo"}, icon: "mdi mdi-information", show: true}, 
       {name: "Sự kiện", path: {name: "ClubEvents"}, icon: "mdi mdi-calendar-range-outline", show: true}, 
       {name: "Thành viên", path: {name: "ClubMembers"}, icon: "mdi mdi-account-group", show: true}, 
-      {name: "Ban", path: {name: "ClubBoards"}, icon: "mdi mdi-account-group", show: true}, 
+      {name: "Ban", path: {name: "ClubBoards"}, icon: "mdi mdi-home-group", show: true}, 
     ]
   },
 ]

@@ -68,6 +68,9 @@
           </template>
           <template v-slot:item.actions="{ item }">
             <div class="d-flex justify-center ga-2">
+              <v-btn size="x-small" icon :to="{name: 'MemberDetail', params: {id: clubId, memberId: item.id}}">
+                <v-icon>mdi-eye-outline</v-icon>
+              </v-btn>
               <v-btn size="x-small" icon color="error" @click="handleDelete(item)">
                 <v-icon>mdi-trash-can-outline</v-icon>
               </v-btn>
@@ -151,6 +154,7 @@ const clubStore = useClubStore();
 const userStore = useUserStore()
 const route = useRoute()
 const toast = useToast();
+const clubId = ref(route.params.id)
 
 const expansionPanel = ref([0]);
 const formSearchRef = ref(null);

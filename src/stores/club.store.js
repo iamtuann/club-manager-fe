@@ -74,6 +74,10 @@ export const useClubStore = defineStore("useClubStore", {
       });
       return response.data;
     },
+    async getMemberById(clubId, memberId) {
+      const response = await ApiService.get(`/clubs/${clubId}/members/${memberId}`);
+      return response.data;
+    },
     async addMembers(clubId, listUser) {
       const response = await ApiService.post(`/clubs/${clubId}/members`, {
         userIds: listUser

@@ -187,9 +187,8 @@ async function getData() {
   dataTable.loading = true;
   try {
     const response = await clubStore.getBoards(route.params.id);
-
     dataTable.items = response;
-    dataTable.totalItems = response.totalElements;
+    dataTable.totalItems = response.length;
   } catch (e) {
     console.error(e);
   } finally {

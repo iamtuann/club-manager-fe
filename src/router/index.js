@@ -50,6 +50,12 @@ const routes = [
         }
       },
       {
+        path: "members/:memberId",
+        name: 'MemberDetail',
+        component: () => import('@/views/clubs/Member.vue'),
+        meta: { }
+      },
+      {
         path: "boards",
         name: 'ClubBoards',
         component: () => import('@/views/clubs/ClubBoards.vue'),
