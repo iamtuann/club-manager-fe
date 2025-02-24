@@ -40,7 +40,7 @@
         <v-data-table-server
           hover
           :items-per-page="dataTable.itemsPerPage"
-          :headers="dataTable.headers"
+          :headers="computedHeader"
           :items="dataTable.items"
           :items-length="dataTable.totalItems"
           :loading="dataTable.loading"
@@ -200,13 +200,14 @@
 
 <script setup>
 import { ref, reactive, computed } from "vue";
-import { useClubStore } from "@/stores";
+import { useAuthStore, useClubStore } from "@/stores";
 import { formatDate, isRequired } from "@/utils";
 import { useToast } from "vue-toastification";
 
 const expansionPanel = ref([0]);
 const formSearchRef = ref(null);
 const clubStore = useClubStore();
+const authStore = useAuthStore()
 const toast = useToast();
 
 const formSearch = reactive({
@@ -239,10 +240,14 @@ const dataTable = reactive({
     {title: "Người quản lý", key: "manager", align: "center", sortable: false},
     {title: "Số thành viên", key: "memberCount", align: "center", sortable: false},
     {title: "Trạng thái", key: "status", align: "center", sortable: false},
-    {title: "", key: "actions", sortable: false},
+    {title: "", key: "actions", sortable: false, hidden: !authStore.isManager()},
   ],
   items: [],
   pageIndex: 1,
+})
+
+const computedHeader = computed(() => {
+  return dataTable.headers.filter(header => !header.hidden);
 })
 
 function handleSearch() {

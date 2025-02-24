@@ -60,7 +60,7 @@ const items = [
     navs: [
       {name: "Sự kiện", path: {name: "Events"}, icon: "mdi mdi-calendar-range-outline", show: true}, 
       {name: "Câu lạc bộ", path: {name: "Clubs"}, icon: "mdi mdi-account-group", show: true}, 
-      {name: "Tài khoản", path: {name: "Users"}, icon: "mdi mdi-account", show: true}, 
+      {name: "Tài khoản", path: {name: "Users"}, icon: "mdi mdi-account", show: isManager}, 
     ]
   },
 ]

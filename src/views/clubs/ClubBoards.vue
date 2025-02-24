@@ -6,7 +6,7 @@
           <v-card-title>
             Danh sách ban
           </v-card-title>
-          <v-btn append-icon="mdi-plus" @click="openAddDialog">
+          <v-btn append-icon="mdi-plus" v-if="isClubManager" @click="openAddDialog">
             Thêm
           </v-btn>
         </div>
@@ -15,7 +15,7 @@
         <v-data-table-server
           hover
           :items-per-page="dataTable.itemsPerPage"
-          :headers="dataTable.headers"
+          :headers="computedHeader"
           :items="dataTable.items"
           :items-length="dataTable.totalItems"
           :loading="dataTable.loading"
@@ -140,7 +140,7 @@
 <script setup>
 import { useClubStore } from "@/stores";
 import { isRequired } from "@/utils";
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -150,6 +150,7 @@ const toast = useToast()
 
 const deleteDialog = ref(false);
 const deleteDialogData = ref(null);
+const isClubManager = clubStore.isClubManager()
 
 const formAddRef = ref(null)
 const addDialog = ref(false)
@@ -169,10 +170,14 @@ const dataTable = reactive({
     {title: "#", key: "index", align: "center", sortable: false},
     {title: "Tên", key: "name", align: "center", sortable: true},
     {title: "Mô tả", key: "description", align: "center", sortable: false},
-    {title: "", key: "actions", sortable: false},
+    {title: "", key: "actions", sortable: false, hidden: !isClubManager},
   ],
   items: [],
   pageIndex: 1,
+})
+
+const computedHeader = computed(() => {
+  return dataTable.headers.filter(header => !header.hidden);
 })
 
 function handleSearch() {

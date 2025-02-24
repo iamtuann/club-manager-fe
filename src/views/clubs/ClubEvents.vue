@@ -31,7 +31,7 @@
           <v-card-title>
             Danh sách sự kiện
           </v-card-title>
-          <v-btn append-icon="mdi-plus" :to="{name: 'CreateEvent'}">
+          <v-btn append-icon="mdi-plus" v-if="isClubManager" :to="{name: 'CreateEvent'}">
             Thêm
           </v-btn>
         </div>
@@ -40,7 +40,7 @@
         <v-data-table-server
           hover
           :items-per-page="dataTable.itemsPerPage"
-          :headers="dataTable.headers"
+          :headers="computedHeader"
           :items="dataTable.items"
           :items-length="dataTable.totalItems"
           :loading="dataTable.loading"
@@ -116,9 +116,7 @@ const formSearch = reactive({
 })
 const deleteDialog = ref(false);
 const deleteDialogData = ref(null);
-
-const addDialog = ref(false)
-const addUsers = ref([])
+const isClubManager = clubStore.isClubManager()
 
 const dataTable = reactive({
   itemsPerPage: 25,
@@ -131,10 +129,14 @@ const dataTable = reactive({
     {title: "Địa chỉ", key: "address", align: "center", sortable: false},
     {title: "Số lượng thành viên", key: "memberCount", align: "center", sortable: false},
     // {title: "Trạng thái", key: "status", align: "center", sortable: false},
-    {title: "", key: "actions", sortable: false},
+    {title: "", key: "actions", sortable: false, hidden: !isClubManager},
   ],
   items: [],
   pageIndex: 1,
+})
+
+const computedHeader = computed(() => {
+  return dataTable.headers.filter(header => !header.hidden);
 })
 
 function handleSearch() {

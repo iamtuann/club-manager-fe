@@ -3,9 +3,21 @@ import ApiService from "@/services/api.service";
 
 export const useClubStore = defineStore("useClubStore", {
   state: () => ({
-    club: {}
+    club: {},
+    role: ""
   }),
   actions: {
+    async getRoleClub(clubId) {
+      const response = await ApiService.get(`/clubs/${clubId}/role`);
+      if (response.status == 200) {
+        this.role = response.data
+        console.log(this.role)
+      }
+      return response.data;
+    },
+    isClubManager() {
+      return this.role === "MANAGER";
+    },
     async search(name, pageIndex, pageSize, key, orderBy) {
       const response = await ApiService.get("/clubs", {
         params: {

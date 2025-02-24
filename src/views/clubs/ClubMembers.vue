@@ -30,7 +30,7 @@
           <v-card-title>
             Danh sách thành viên
           </v-card-title>
-          <v-btn append-icon="mdi-plus" @click="openAddDialog">
+          <v-btn append-icon="mdi-plus" v-if="isClubManager" @click="openAddDialog">
             Thêm
           </v-btn>
         </div>
@@ -39,7 +39,7 @@
         <v-data-table-server
           hover
           :items-per-page="dataTable.itemsPerPage"
-          :headers="dataTable.headers"
+          :headers="computedHeader"
           :items="dataTable.items"
           :items-length="dataTable.totalItems"
           :loading="dataTable.loading"
@@ -146,7 +146,7 @@
 <script setup>
 import { useClubStore, useUserStore } from "@/stores";
 import { formatDate } from "@/utils";
-import { ref, reactive } from "vue";
+import { ref, reactive , computed} from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
@@ -163,6 +163,7 @@ const formSearch = reactive({
 })
 const deleteDialog = ref(false);
 const deleteDialogData = ref(null);
+const isClubManager = clubStore.isClubManager()
 
 const addDialog = ref(false)
 const listUser = ref([])
@@ -179,10 +180,14 @@ const dataTable = reactive({
     {title: "Ngành học", key: "major", align: "center", sortable: false},
     {title: "Ngày tham gia", key: "joinDate", align: "center", sortable: false},
     // {title: "Trạng thái", key: "status", align: "center", sortable: false},
-    {title: "", key: "actions", sortable: false},
+    {title: "", key: "actions", sortable: false, hidden: !isClubManager},
   ],
   items: [],
   pageIndex: 1,
+})
+
+const computedHeader = computed(() => {
+  return dataTable.headers.filter(header => !header.hidden);
 })
 
 function handleSearch() {

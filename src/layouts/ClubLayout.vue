@@ -10,7 +10,7 @@
         <SidebarClub />
       </v-navigation-drawer>
       <v-app-bar id="header">
-        <template v-if="true" #prepend>
+        <template #prepend>
           <v-btn
             v-if="mdAndDown"
             icon="mdi-menu"
@@ -18,6 +18,7 @@
             color="default"
             @click="drawer = true"
           />
+          <RouterLink class="nav-link" :to="{name: 'Clubs'}">Danh sách CLB</RouterLink>
         </template>
         <Header />
       </v-app-bar>
@@ -42,7 +43,10 @@ const route = useRoute()
 const clubStore = useClubStore();
 
 async function getClub() {
-  const res = await clubStore.getById(route.params.id)
+  await Promise.all([
+    clubStore.getById(route.params.id),
+    clubStore.getRoleClub(route.params.id)
+  ]) 
 }
 getClub();
 </script>
@@ -51,5 +55,11 @@ getClub();
 #header.v-app-bar {
   padding: 0 24px;
   position: relative;
+}
+.nav-link {
+  min-width: 130px;
+  padding: 4px 6px;
+  margin-left: 20px;
+  color: rgba(58, 53, 65, 1);
 }
 </style>
