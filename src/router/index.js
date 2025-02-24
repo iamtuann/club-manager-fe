@@ -37,53 +37,36 @@ const routes = [
         path: "",
         name: 'ClubInfo',
         component: () => import('@/views/clubs/ClubInfo.vue'),
-        meta: { 
-          
-        }
       },
       {
         path: "members",
         name: 'ClubMembers',
         component: () => import('@/views/clubs/ClubMembers.vue'),
-        meta: { 
-          
-        }
       },
       {
         path: "members/:memberId",
         name: 'MemberDetail',
         component: () => import('@/views/clubs/Member.vue'),
-        meta: { }
       },
       {
         path: "boards",
         name: 'ClubBoards',
         component: () => import('@/views/clubs/ClubBoards.vue'),
-        meta: { 
-          
-        }
       },
       {
         path: "events",
         name: 'ClubEvents',
         component: () => import('@/views/clubs/ClubEvents.vue'),
-        meta: { 
-          
-        }
       },
       {
         path: "events/create",
         name: 'CreateEvent',
         component: () => import('@/views/clubs/CreateUpdateEvent.vue'),
-        meta: { 
-        }
       },
       {
         path: "events/:eventId/update",
         name: 'UpdateEvent',
         component: () => import('@/views/clubs/CreateUpdateEvent.vue'),
-        meta: { 
-        }
       },
     ]
   },
@@ -92,6 +75,7 @@ const routes = [
     meta: { 
       layout: DefaultLayout,
       requiredAuth: true,
+      roles: [ROLE_MANAGER]
     },
     children: [
       {

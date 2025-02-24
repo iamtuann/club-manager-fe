@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-page d-flex justify-content-center align-items-center">
-    <div class="container page-403 d-flex flex-column justify-content-center align-items-center ">
+  <div class="bg-page d-flex justify-center align-center">
+    <div class="container page-403 d-flex flex-column justify-center align-center ">
       <img class="w-100" src="../assets/images/403-access-denied.png" alt="403-image">
       <div class="d-flex flex-column gap-md-4 gap-2">
         <p class="title-warning mb-0">Không có quyền truy cập</p>
-        <button class="main-btn btn-back" @click="router.push({ name: 'Events' })">Quay lại trang chủ</button>
+        <button class="btn-back" @click="router.push({ name: 'Events' })">Quay lại trang chủ</button>
       </div>
     </div>
   </div>
@@ -20,6 +20,7 @@ const router = useRouter();
 .bg-page {
   background-color: #ffffff;
   height: 100%;
+  min-height: 100vh;
 }
 
 .page-403 {
@@ -42,6 +43,10 @@ const router = useRouter();
 .btn-back {
   background-color: rgb(var(--v-theme-primary)) !important;
   font-weight: 600;
+  padding: 12px;
+  border-radius: 4px;
+  color: #fff;
+  margin-top: 12px;
 }
 
 @media screen and (max-width : 1024px) {

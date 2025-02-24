@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import ApiService from "@/services/api.service";
+import {useAuthStore} from "./auth.store";
 
 export const useClubStore = defineStore("useClubStore", {
   state: () => ({
@@ -11,12 +12,13 @@ export const useClubStore = defineStore("useClubStore", {
       const response = await ApiService.get(`/clubs/${clubId}/role`);
       if (response.status == 200) {
         this.role = response.data
-        console.log(this.role)
+      } else {
+        this.role = "NONE"
       }
       return response.data;
     },
     isClubManager() {
-      return this.role === "MANAGER";
+      return useAuthStore().isManager() || this.role === "MANAGER";
     },
     async search(name, pageIndex, pageSize, key, orderBy) {
       const response = await ApiService.get("/clubs", {

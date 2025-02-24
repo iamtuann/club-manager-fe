@@ -4,8 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import router from "@/router";
 import { ROLE_MANAGER } from "@/constant";
 
-export const useAuthStore = defineStore({
-  id: "authStore",
+export const useAuthStore = defineStore("authStore", {
   state: () => ({
 
   }),
