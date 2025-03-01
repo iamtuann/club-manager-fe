@@ -31,7 +31,7 @@
           <v-card-title>
             Danh sách CLB
           </v-card-title>
-          <v-btn append-icon="mdi-plus" @click="openAddDialog">
+          <v-btn append-icon="mdi-plus" v-if="authStore.isManager()" @click="openAddDialog">
             Thêm
           </v-btn>
         </div>
