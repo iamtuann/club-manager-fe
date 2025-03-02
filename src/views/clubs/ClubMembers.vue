@@ -63,6 +63,9 @@
           <template v-slot:item.major="{ item }">
             {{ item.user.major }}
           </template>
+          <template v-slot:item.role="{ item }">
+            {{ item.user.id == clubStore.club.manager.id ? 'Chủ nhiệm' : 'Thành viên' }}
+          </template>
           <template v-slot:item.joinDate="{ item }">
             {{ formatDate(new Date(item.joinDate)) }}
           </template>
@@ -178,6 +181,7 @@ const dataTable = reactive({
     {title: "Họ tên", key: "name", align: "center", sortable: true},
     {title: "MSV", key: "code", align: "center", sortable: false},
     {title: "Ngành học", key: "major", align: "center", sortable: false},
+    {title: "Chức vụ", key: "role", align: "center", sortable: false},
     {title: "Ngày tham gia", key: "joinDate", align: "center", sortable: false},
     // {title: "Trạng thái", key: "status", align: "center", sortable: false},
     {title: "", key: "actions", sortable: false, hidden: !isClubManager},
