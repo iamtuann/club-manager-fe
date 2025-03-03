@@ -237,7 +237,7 @@ const dataTable = reactive({
     {title: "#", key: "index", align: "center", sortable: false},
     {title: "Tên", key: "name", align: "center", sortable: true},
     {title: "Ngày tạo", key: "createdAt", align: "center", sortable: false},
-    {title: "Người quản lý", key: "manager", align: "center", sortable: false},
+    {title: "Chủ nhiệm", key: "manager", align: "center", sortable: false},
     {title: "Số thành viên", key: "memberCount", align: "center", sortable: false},
     {title: "Trạng thái", key: "status", align: "center", sortable: false},
     {title: "", key: "actions", sortable: false, hidden: !authStore.isManager()},

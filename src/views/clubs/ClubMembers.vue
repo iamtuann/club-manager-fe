@@ -64,7 +64,7 @@
             {{ item.user.major }}
           </template>
           <template v-slot:item.role="{ item }">
-            {{ item.user.id == clubStore.club.manager.id ? 'Chủ nhiệm' : 'Thành viên' }}
+            {{ item.user.id == clubStore.club?.manager?.id ? 'Chủ nhiệm' : 'Thành viên' }}
           </template>
           <template v-slot:item.joinDate="{ item }">
             {{ formatDate(new Date(item.joinDate)) }}

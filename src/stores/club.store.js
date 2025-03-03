@@ -39,16 +39,19 @@ export const useClubStore = defineStore("useClubStore", {
       return response.data;
     },
     async create(name, description) {
+      this.club = {}
       const response = await ApiService.post("/clubs", {
         name, description
       });
       return response.data;
     },
     async update(id, data) {
+      this.club = {}
       const response = await ApiService.put("/clubs/" + id, data);
       return response.data;
     },
     async delete(id) {
+      this.club = {}
       const response = await ApiService.delete("/clubs/"+id);
       return response.data;
     },
